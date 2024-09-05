@@ -1,12 +1,14 @@
 import React from 'react';
 import Countdown from '../components/countdown';// Ensure you have the Countdown component imported
 import GoogleMap from '../components/GoogleMap';
+import Navbar from '../components/navbar';
 
 const UserPage: React.FC = () => {
   const weddingDate = '2024-12-12T15:00:00';
   return (
-    <div className='p-4 sm:p-6 max-w-md mx-auto satisfy'>
-      <div className="relative max-w-48 mx-auto mt-2">
+    <div className='p-4 sm:p-6 max-w-md mx-auto satisfy bgColour'>
+      {/* <Navbar /> */}
+      <div className="relative max-w-48 mx-auto mt-1">
         <img src="/file.png" alt="imgIcon" />
       </div>
       <div className="flex items-center justify-center">
