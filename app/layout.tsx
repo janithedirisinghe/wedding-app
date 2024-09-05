@@ -1,8 +1,25 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Roboto } from "next/font/google";
 import "./globals.css";
+import { Ruda, Indie_Flower, Satisfy } from 'next/font/google';
 
-const inter = Inter({ subsets: ["latin"] });
+const indie = Indie_Flower({
+  subsets: ["latin"],
+  variable: "--font-indie",
+  weight: "400",
+});
+
+const ruda = Ruda({
+  subsets: ["latin"],
+  variable: "--font-ruda",
+  weight: "400", // Choose the appropriate weight as per the Google Fonts page
+});
+
+const satisfy = Satisfy({
+  subsets: ["latin"],
+  variable: "--font-satisfy",
+  weight: "400",
+});
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -16,7 +33,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={`${indie.variable} ${ruda.variable} ${satisfy.variable}`}>
+        {children}
+      </body>
     </html>
   );
 }
