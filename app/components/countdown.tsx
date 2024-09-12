@@ -50,25 +50,25 @@ const Countdown: React.FC<CountdownProps> = ({ targetDate }) => {
   }
 
   return (
-    <div className="p-4 sm:p-6 max-w-md mx-auto bg-white rounded-lg border border-gray-200">
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+    <div className="p-4 sm:p-6 max-w-md mx-auto bgColour rounded-lg border border-gray-200">
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 fontColour4">
         {timeLeft ? (
           <>
             <div className="flex flex-col items-center p-4 bg-gray-100 rounded-lg shadow-md hover:bg-gray-200 transition">
               <span className="text-xl sm:text-2xl font-bold">{timeLeft.days}</span>
-              <span className="text-xs sm:text-sm text-gray-500">Days</span>
+              <span className="text-xs sm:text-sm fontColour3">Days</span>
             </div>
             <div className="flex flex-col items-center p-4 bg-gray-100 rounded-lg shadow-md hover:bg-gray-200 transition">
               <span className="text-xl sm:text-2xl font-bold">{timeLeft.hours}</span>
-              <span className="text-xs sm:text-sm text-gray-500">Hours</span>
+              <span className="text-xs sm:text-sm fontColour3">Hours</span>
             </div>
             <div className="flex flex-col items-center p-4 bg-gray-100 rounded-lg shadow-md hover:bg-gray-200 transition">
               <span className="text-xl sm:text-2xl font-bold">{timeLeft.minutes}</span>
-              <span className="text-xs sm:text-sm text-gray-500">Minutes</span>
+              <span className="text-xs sm:text-sm fontColour3">Minutes</span>
             </div>
             <div className="flex flex-col items-center p-4 bg-gray-100 rounded-lg shadow-md hover:bg-gray-200 transition">
               <span className="text-xl sm:text-2xl font-bold">{timeLeft.seconds}</span>
-              <span className="text-xs sm:text-sm text-gray-500">Seconds</span>
+              <span className="text-xs sm:text-sm fontColour3">Seconds</span>
             </div>
           </>
         ) : (

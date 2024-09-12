@@ -17,10 +17,13 @@
 .satisfy {
   font-family: var(--font-satisfy);
 }
+.poppins {
+  font-family: var(--font-poppins);
+}
 
-.body {
+body {
   padding: 1rem;
-  background-color: #ffd165;
+  background-color: #FFFBF2;
   font-family: 'Mysoul', sans-serif;
 }
 
@@ -39,6 +42,7 @@
 .fontColour4 {
   color: #976F37;
 }
+
 
 /* styles/globals.css */
 .iframe-container {
@@ -64,4 +68,8 @@
 
 .visible {
   display: block;
+}
+
+.sideimg{
+  background-image: url('/sidebarbgimage.png');
 }

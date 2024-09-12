@@ -1,11 +1,18 @@
 import type { Metadata } from "next";
 import { Roboto } from "next/font/google";
 import "./globals.css";
-import { Ruda, Indie_Flower, Satisfy } from 'next/font/google';
+import { Ruda, Indie_Flower, Satisfy, Poppins} from 'next/font/google';
+import { GoHome } from "react-icons/go";
 
 const indie = Indie_Flower({
   subsets: ["latin"],
   variable: "--font-indie",
+  weight: "400",
+});
+
+const poppins = Poppins({
+  subsets: ["latin"],
+  variable: "--font-poppins",
   weight: "400",
 });
 
@@ -33,7 +40,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${indie.variable} ${ruda.variable} ${satisfy.variable}`}>
+      <body className={`${indie.variable} ${ruda.variable} ${satisfy.variable} ${poppins.variable}`}>
         {children}
       </body>
     </html>
