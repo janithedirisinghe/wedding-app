@@ -1,14 +1,11 @@
 import Head from "next/head";
 import Image from "next/image";
 
-export default function Home() {
+export default function DashboardPage() {
   return (
-    <main>
-        <Head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-          <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin='anonymous' />
-        </Head>
-      <h1>Hello World</h1>
-    </main>
+    <div>
+      <h1>Welcome to the Dashboard</h1>
+      {/* Dashboard Content */}
+    </div>
   );
 }
