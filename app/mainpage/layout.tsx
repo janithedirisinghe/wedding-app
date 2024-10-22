@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
-import { Roboto } from "next/font/google";
-import "./globals.css";
+import "../globals.css";
 import { Ruda, Indie_Flower, Satisfy, Poppins } from 'next/font/google';
-import { GoHome } from "react-icons/go";
-import Navbar from "./components/navbar";
-import Sidebar from "./components/sidebar";
+import Sidebar from "../components/sidebar";
+import Navbar from "../components/navbar";
+import PageFooter from "../components/pagefooter";
 
 const indie = Indie_Flower({
   subsets: ["latin"],
@@ -47,7 +46,7 @@ export default function RootLayout({
           <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
           <div className="drawer-content flex flex-col">
             {/* Navbar and Page content */}
-            {/* <Navbar /> */}
+            <Navbar/>
             {children}
           </div>
           <div className="drawer-side">

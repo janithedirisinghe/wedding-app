@@ -8,6 +8,10 @@ import ReactPaginate from "react-paginate";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
+interface GroupTableProps {
+  groupId: number; // Add this line
+}
+
 interface Invite {
   id: number;
   name: string;
@@ -23,11 +27,11 @@ const statusColorMap: { [key: string]: string } = {
   vacation: "bg-yellow-100 text-yellow-700",
 };
 
-const GroupTable = () => {
+const GroupTable: React.FC<GroupTableProps> = ({ groupId }) => {
   const [invites, setInvites] = useState<Invite[]>([]);
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
-  const [email, setEmail] = useState("");
+  // const [email, setEmail] = useState("");
   const [state, setState] = useState("active"); // Default state
   const [currentPage, setCurrentPage] = useState(0);
   const [itemsPerPage] = useState(5);
@@ -35,33 +39,59 @@ const GroupTable = () => {
   // Fetch invites on component mount
   useEffect(() => {
     fetchInvites();
-  }, []);
+  }, [groupId]); // Add groupId as a dependency
 
   const fetchInvites = () => {
-    fetch(`${apiUrl}/api/invites`)
+    fetch(`${apiUrl}/api/invites?groupId=${groupId}`) // Adjust the endpoint as necessary
       .then((response) => response.json())
       .then((data) => setInvites(data))
       .catch((error) => console.error("Error fetching data:", error));
   };
 
+  // Retrieve userId from localStorage
+  const userId = Number(localStorage.getItem('userId'));
+
+  if (!userId) {
+      console.error('User ID not found in localStorage');
+      return;
+  }
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const newInvite = { name, phone, state };
+    const newInvite = { name, phone, state ,groupId, userId}; // Include email in the new invite
 
-    fetch(`${apiUrl}/api/invites`, {
+    fetch(`${apiUrl}/api/invites?groupId=${groupId}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(newInvite),
     })
-      .then((response) => response.json())
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
       .then((data) => {
         setInvites([...invites, data]); // Add new invite to state
         setName(""); // Reset form fields
         setPhone("");
-        setEmail("");
+         // Reset email
         setState("active");
       })
       .catch((error) => console.error("Error adding invite:", error));
+  };
+
+  const handleDeleteInvite = (inviteId: number) => {
+    fetch(`${apiUrl}/api/invites?id=${inviteId}`, {
+      method: "DELETE",
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Error deleting invite');
+        }
+        setInvites(invites.filter((invite) => invite.id !== inviteId)); // Remove invite from the state
+      })
+      .catch((error) => console.error("Error deleting invite:", error));
   };
 
   const renderCell = (invite: Invite, columnKey: string) => {
@@ -89,8 +119,10 @@ const GroupTable = () => {
           <div className="flex space-x-2">
             <IoEyeOutline className="text-lg text-gray-500 cursor-pointer hover:text-blue-500" />
             <RiEditLine className="text-lg text-gray-500 cursor-pointer hover:text-yellow-500" />
-            <MdOutlineDeleteOutline className="text-lg text-red-500 cursor-pointer hover:text-red-700" />
-          </div>
+            <MdOutlineDeleteOutline
+              className="text-lg text-red-500 cursor-pointer hover:text-red-700"
+              onClick={() => handleDeleteInvite(invite.id)} // Call delete function on click
+            />  </div>
         );
       default:
         return cellValue;
@@ -120,36 +152,46 @@ const GroupTable = () => {
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
-              id="first_name" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            placeholder="Enter the name"/>
+              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+              placeholder="Enter the name"
+            />
           </div>
           <div>
-            <label htmlFor="phone-input" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Phone number:</label>
+            <label htmlFor="phone-input" className="block mb-2 text-sm font-medium text-gray-900">Phone number:</label>
             <div className="relative">
-              <div className="absolute inset-y-0 start-0 top-0 flex items-center ps-3.5 pointer-events-none">
-                <svg className="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 19 18">
-                  <path d="M18 13.446a3.02 3.02 0 0 0-.946-1.985l-1.4-1.4a3.054 3.054 0 0 0-4.218 0l-.7.7a.983.983 0 0 1-1.39 0l-2.1-2.1a.983.983 0 0 1 0-1.389l.7-.7a2.98 2.98 0 0 0 0-4.217l-1.4-1.4a2.824 2.824 0 0 0-4.218 0c-3.619 3.619-3 8.229 1.752 12.979C6.785 16.639 9.45 18 11.912 18a7.175 7.175 0 0 0 5.139-2.325A2.9 2.9 0 0 0 18 13.446Z" />
-                </svg>
-              </div>
-              <input type="text" id="phone-input" aria-describedby="helper-text-explanation" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" pattern="0\d{9}" placeholder="0xxxxxxxxx" required value={phone}
-                onChange={(e) => setPhone(e.target.value)} />
+              <input
+                type="text"
+                id="phone-input"
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                pattern="0\d{9}"
+                placeholder="0xxxxxxxxx"
+                required
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+              />
             </div>
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
             <input
               type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              id="email" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Enter the email if have"/>
+              // value={email}
+              // onChange={(e) => setEmail(e.target.value)}
+              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+              placeholder="Enter the email if have"
+            />
           </div>
           <div>
-            <label htmlFor="countries" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select an option</label>
-            <select value={state}
-              onChange={(e) => setState(e.target.value)} id="countries" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-              <option selected value="Active">Active</option>
-              <option value="Paused">Paused</option>
-              <option value="Vacation">Vacation</option>
+            <label htmlFor="countries" className="block mb-2 text-sm font-medium text-gray-900">Select an option</label>
+            <select
+              value={state}
+              onChange={(e) => setState(e.target.value)}
+              id="countries"
+              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+            >
+              <option value="active">Active</option>
+              <option value="paused">Paused</option>
+              <option value="vacation">Vacation</option>
             </select>
           </div>
         </div>
@@ -189,20 +231,14 @@ const GroupTable = () => {
           breakLabel={"..."}
           pageCount={Math.ceil(invites.length / itemsPerPage)}
           marginPagesDisplayed={2}
-          pageRangeDisplayed={3}
+          pageRangeDisplayed={5}
           onPageChange={handlePageChange}
-          containerClassName={"flex justify-center items-center mt-6"}
+          containerClassName={"flex justify-center mt-4"}
           pageClassName={"mx-1"}
-          pageLinkClassName={
-            "px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-200"
-          }
-          previousLinkClassName={
-            "px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-200"
-          }
-          nextLinkClassName={
-            "px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-200"
-          }
-          activeLinkClassName={"bg-blue-500 text-white"}
+          previousClassName={"mx-1"}
+          nextClassName={"mx-1"}
+          activeClassName={"font-bold"}
+          disabledClassName={"text-gray-400"}
         />
       </div>
     </div>

@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -14,31 +8,70 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  username  String   @unique
+  id        Int        @id @default(autoincrement())
+  username  String     @unique
   password  String
-  email     String   @unique
-  createdAt DateTime @default(now())
+  email     String     @unique
+  createdAt DateTime   @default(now())
+  groups    Group[]    // One-to-many: A user can create many groups
+  invites   Invite[]   // One-to-many: A user can create many invites
+  groupTemplate GroupTemplate[] // One-to-many: A user can add many templates
 }
 
 model Template {
-  id        Int      @id @default(autoincrement())
-  name      String
-  content   String
-  createdAt DateTime @default(now())
-}
-
-model Invite {
-  id        Int      @id @default(autoincrement())
-  name      String
-  phone     String
-  state     String
-  createdAt DateTime @default(now())
+  id              Int              @id @default(autoincrement())
+  name            String           // Name of the template
+  description     String?          // Optional description for the template
+  defaultDate     DateTime?        // Default invite date (customizable by user)
+  content         String?          // Content related to the template
+  createdAt       DateTime         @default(now())
+  groupTemplates  GroupTemplate[]  // Relationship with GroupTemplate
 }
 
 model Group {
-  id          Int      @id @default(autoincrement())
+  id          Int        @id @default(autoincrement())
   name        String
   description String
+  createdAt   DateTime   @default(now())
+  userId      Int        // Foreign key to User
+  user        User       @relation(fields: [userId], references: [id]) // Group belongs to a user
+  invites     Invite[]   // One-to-many: A group can have many invites
+  myTemplateGroups MyTemplateGroup[] // Relationship with MyTemplateGroup (group-template relationship)
+}
+
+model GroupTemplate {
+  id              Int              @id @default(autoincrement())
+  inviteDate      DateTime?        // Custom invite date set by the user (optional)
+  firstName       String?          // First name for customization
+  secondName      String?
+  location        String?
+  rsvpDate        DateTime?
+  createdAt       DateTime         @default(now())
+  templateId      Int              // Foreign key to Template
+  template        Template         @relation(fields: [templateId], references: [id]) // GroupTemplate belongs to a Template
+  myTemplateGroups MyTemplateGroup[] // One-to-many relationship with MyTemplateGroup
+  userId          Int        // Foreign key to User
+  user            User       @relation(fields: [userId], references: [id]) // Group belongs to a user
+}
+
+model MyTemplateGroup {
+  id              Int              @id @default(autoincrement())
+  groupId         Int              // Foreign key to Group
+  groupTemplateId Int              // Foreign key to GroupTemplate
+  group           Group            @relation(fields: [groupId], references: [id]) // MyTemplateGroup references Group
+  groupTemplate   GroupTemplate    @relation(fields: [groupTemplateId], references: [id]) // MyTemplateGroup references GroupTemplate
+  createdAt       DateTime         @default(now())
+}
+
+model Invite {
+  id          Int      @id @default(autoincrement())
+  name        String   // Name of the person being invited
+  phone       String   // Phone number for the invite
+  state       String?  // Optional state of the invite (e.g., confirmed, pending)
   createdAt   DateTime @default(now())
+  
+  groupId     Int      // Foreign key to Group
+  group       Group    @relation(fields: [groupId], references: [id]) // Each invite belongs to a group
+  userId      Int      // Foreign key to User
+  user        User     @relation(fields: [userId], references: [id])  // Each invite belongs to a user
 }

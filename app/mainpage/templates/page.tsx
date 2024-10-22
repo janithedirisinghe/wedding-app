@@ -1,4 +1,6 @@
-import TemplatesBox from "../components/templateBoard";
+"use client"
+import TemplatesBox from "@/app/components/templateBoard";
+
 
 export default function Templates() {
   return (

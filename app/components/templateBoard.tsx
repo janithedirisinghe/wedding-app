@@ -1,21 +1,23 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
+import Link from "next/link";
 import React, { useState } from "react";
 
 const Templates = [
-  { id: 1, image: "https://via.placeholder.com/150", description: "This is the description of the image" },
-  { id: 2, image: "https://via.placeholder.com/150", description: "This is the description of the image" },
-  { id: 3, image: "https://via.placeholder.com/150", description: "This is the description of the image" },
-  { id: 4, image: "https://via.placeholder.com/150", description: "This is the description of the image" },
-  { id: 5, image: "https://via.placeholder.com/150", description: "This is the description of the image" },
-  { id: 6, image: "https://via.placeholder.com/150", description: "This is the description of the image" },
-  { id: 7, image: "https://via.placeholder.com/150", description: "This is the description of the image" },
+  {
+    templateId: 1,
+    image: "https://via.placeholder.com/150",
+    description: "This is the description of the image",
+    link: `http://localhost:3000/mywebs`,
+  },
+  // Additional templates can be added here
 ];
 
 const TemplatesBox = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
 
-  const openModal = (image) => {
+  const openModal = (image: any) => {
     setSelectedImage(image);
     setIsModalOpen(true);
   };
@@ -28,7 +30,7 @@ const TemplatesBox = () => {
   return (
     <>
       {Templates.map((template) => (
-        <div className="p-4 sm:p-6 bgColour rounded-lg border border-gray-200 m-2" key={template.id}>
+        <div className="p-4 sm:p-6 bgColour rounded-lg border border-gray-200 m-2" key={template.templateId}>
           <div className="grid grid-cols-4">
             <div onClick={() => openModal(template.image)}>
               <img src={template.image} alt="template" />
@@ -36,7 +38,16 @@ const TemplatesBox = () => {
             <div className="col-span-3">
               {template.description}
               <div className="pt-4">
-                <button className="bg-blue-200 text-white rounded-lg px-2 py-1">Use Template</button>
+                <Link href={template.link} passHref>
+                  <button className="bg-blue-500 text-white rounded-lg px-2 py-1">
+                    Show Demo
+                  </button>
+                </Link>
+                <Link href={`/mainpage/templates/${template.templateId}`}>
+                <button className="bg-blue-500 text-white rounded-lg px-2 py-1 ms-2">
+                  Use template
+                </button>
+                </Link>
               </div>
             </div>
           </div>
@@ -49,7 +60,9 @@ const TemplatesBox = () => {
           <div className="bg-white rounded-lg p-4 max-w-lg w-full">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-semibold">Selected Image</h2>
-              <button onClick={closeModal} className="text-red-500">Close</button>
+              <button onClick={closeModal} className="text-red-500">
+                Close
+              </button>
             </div>
             <img src={selectedImage} alt="Selected Template" className="max-w-full h-auto" />
           </div>

@@ -8,7 +8,7 @@ const Sidebar: React.FC = () => {
   return (
     <ul className="menu bg-amber-600 text-white min-h-full w-80 p-4 sideimg gap-2 pt-8 text-md">
       <li>
-        <Link href="/dashboard">
+        <Link href="/mainpage/dashboard">
             <div className="bg-amber-500 rounded-lg p-2">
               <GrHomeRounded />
             </div>
@@ -16,7 +16,7 @@ const Sidebar: React.FC = () => {
         </Link>
       </li>
       <li>
-        <Link href="/invites">
+        <Link href="/mainpage/invites">
       
             <div className="bg-amber-500 rounded-lg p-2">
               <LuMailOpen />
@@ -26,7 +26,7 @@ const Sidebar: React.FC = () => {
         </Link>
       </li>
       <li>
-        <Link href="/templates">
+        <Link href="/mainpage/templates">
       
             <div className="bg-amber-500 rounded-lg p-2">
               <GrTemplate />

@@ -1,4 +1,6 @@
-import InvtesPage from "../components/invites";
+import InvtesPage from "@/app/components/invites";
+
+
 
 export default function Invites() {
   return (
