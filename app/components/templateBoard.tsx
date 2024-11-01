@@ -8,7 +8,7 @@ const Templates = [
     templateId: 1,
     image: "https://via.placeholder.com/150",
     description: "This is the description of the image",
-    link: `http://localhost:3000/mywebs`,
+    link: `/mywebs`,
   },
   // Additional templates can be added here
 ];

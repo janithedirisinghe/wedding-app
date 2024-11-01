@@ -1,11 +1,31 @@
 import React from 'react';
 import Countdown from '../components/countdown';// Ensure you have the Countdown component imported
 import GoogleMap from '../components/GoogleMap';
+import { MdRsvp } from "react-icons/md";
 
 const TemplateOne = () => {
   const weddingDate = '2024-12-12T15:00:00';
   return (
-    <div className='p-4 sm:p-6 max-w-md mx-auto satisfy bgColour'>
+    <div className='ps-3 pe-3 max-w-md mx-auto satisfy bgColour relative'>
+
+      {/* Modal for the RSVP */}
+      <label htmlFor="my_modal_7" className="btn fixed bottom-4 left-3 sm:bottom-6 sm:left-6 md:bottom-8 md:left-1/3 lg:bottom-10 lg:left-1/3">
+        <MdRsvp className="text-2xl" />
+      </label>
+
+      <input type="checkbox" id="my_modal_7" className="modal-toggle" />
+      <div className="modal" role="dialog">
+        <div className="modal-box">
+          <h3 className="text-lg font-bold">Hello </h3>
+          <p className="py-4">Will you be attending?</p>
+          <div className="modal-action">
+          <button className="btn">Yes</button>
+          <button className="btn">No</button>
+          </div>
+        </div>
+        <label className="modal-backdrop" htmlFor="my_modal_7">Close</label>
+      </div>
+      
       {/* <Navbar /> */}
       <div className="relative max-w-48 mx-auto mt-1">
         <img src="/file.png" alt="imgIcon" />

@@ -5,7 +5,10 @@
 :root {
   --font-indie: 'Indie Flower', cursive;
   --font-ruda: 'Ruda', sans-serif;
+  --font-satisfy: 'Satisfy', cursive;
+  --font-poppins: 'Poppins', sans-serif;
 }
+
 
 .indie {
   font-family: var(--font-indie);

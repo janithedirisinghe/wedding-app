@@ -39,7 +39,12 @@ export default function CardDetailPage() {
   }, [id]); // Fetch data when `id` changes
 
   if (loading) {
-    return <div>Loading...</div>; // Display loading message
+    return <div className="">
+      <span className="loading loading-ring loading-md"></span>
+      <span className="loading loading-ring loading-md"></span>
+      <span className="loading loading-ring loading-md"></span>
+      <span className="loading loading-ring loading-md"></span>
+      </div>;
   }
 
   if (error) {
@@ -51,7 +56,7 @@ export default function CardDetailPage() {
       <div className="overflow-x-auto">
         <div className="flex justify-between m-3">Group Details</div>
 
-        <table className="table table-xs table-pin-rows table-pin-cols">
+        <table className="table table-zebra">
           <thead>
             <tr>
               <td>ID</td>
@@ -68,7 +73,7 @@ export default function CardDetailPage() {
                 <td>{item.description}</td>
                 <td>
                   <button>
-                    <Link href={`/mainpage/dashboard/${item.id}/${item.groupId}`}>
+                    <Link href={`/mainpage/dashboard/${id}/${item.groupId}`}>
                       Share
                     </Link>
                   </button>

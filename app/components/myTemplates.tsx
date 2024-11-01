@@ -84,21 +84,22 @@ const MyTemplates: React.FC = () => {
         {currentItems.map((item) => (
           <div
             key={item.id}
-            className="flex-shrink-0 flex flex-col items-center bg-white border border-gray-200 rounded-lg shadow md:flex-row md:max-w-xl hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700"
+            className="card bg-base-100 image-full w-96 shadow-xl"
           >
-            {/* Link to dynamic page with ID in URL */}
-            <Link href={`/mainpage/dashboard/${item.id}`}>
+            <figure>
               <img
-                className="object-cover w-full rounded-t-lg h-96 md:h-auto md:w-48 md:rounded-none md:rounded-s-lg"
-                src={"https://via.placeholder.com/150"}
-                alt={`${item.firstName} ${item.secondName}`}
-              />
-              <div className="flex flex-col justify-between p-4 leading-normal">
-                <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+                src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
+                alt="Shoes" />
+            </figure>
+            {/* Link to dynamic page with ID in URL */}
+            <div className="card-body">
+              <Link href={`/mainpage/dashboard/${item.id}`}>
+
+                <div className="card-title">
                   {`${item.firstName} ${item.secondName}`}
-                </h5>
-              </div>
-            </Link>
+                </div>
+              </Link>
+            </div>
           </div>
         ))}
       </div>

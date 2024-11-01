@@ -7,15 +7,27 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model InviteState {
+  inviteStId       Int           @id @default(autoincrement())  // Primary key
+  status           String        // Status of the invite (e.g., "confirmed", "pending", etc.)
+  createdAt        DateTime      @default(now())  // Timestamp for when the invite state was created
+  
+  inviteId         Int           // Foreign key to Invite
+  invite           Invite        @relation(fields: [inviteId], references: [id])  // One-to-many: An invite can have many invite states
+  
+  groupTemplateId  Int           // Foreign key to GroupTemplate
+  groupTemplate    GroupTemplate @relation(fields: [groupTemplateId], references: [id])  // One-to-many: A group template can have many invites
+}
+
 model User {
-  id        Int        @id @default(autoincrement())
-  username  String     @unique
-  password  String
-  email     String     @unique
-  createdAt DateTime   @default(now())
-  groups    Group[]    // One-to-many: A user can create many groups
-  invites   Invite[]   // One-to-many: A user can create many invites
-  groupTemplate GroupTemplate[] // One-to-many: A user can add many templates
+  id               Int               @id @default(autoincrement())
+  username         String            @unique
+  password         String
+  email            String            @unique
+  createdAt        DateTime          @default(now())
+  groups           Group[]           // One-to-many: A user can create many groups
+  invites          Invite[]          // One-to-many: A user can create many invites
+  groupTemplate    GroupTemplate[]   // One-to-many: A user can add many templates
 }
 
 model Template {
@@ -52,6 +64,7 @@ model GroupTemplate {
   myTemplateGroups MyTemplateGroup[] // One-to-many relationship with MyTemplateGroup
   userId          Int        // Foreign key to User
   user            User       @relation(fields: [userId], references: [id]) // Group belongs to a user
+  inviteStates    InviteState[]  // One-to-many: A GroupTemplate can have many invite states
 }
 
 model MyTemplateGroup {
@@ -74,4 +87,5 @@ model Invite {
   group       Group    @relation(fields: [groupId], references: [id]) // Each invite belongs to a group
   userId      Int      // Foreign key to User
   user        User     @relation(fields: [userId], references: [id])  // Each invite belongs to a user
+  inviteStates InviteState[]  // One-to-many: An invite can have many states
 }

@@ -8,6 +8,30 @@ export const createInvite = async (data: any) => {
   return await prisma.invite.create({ data });
 };
 
+export const getInviteMobileNomberFromId = async (inviteStId: number) => {
+  return await prisma.inviteState.findUnique({
+    where: {
+      inviteStId: inviteStId,
+    },
+    include: {
+      invite: {
+        select: {
+          phone: true,
+        }
+      },
+      groupTemplate: {
+        include: {
+          template: {
+            select: {
+              description: true,
+            }
+          }
+        }
+      }
+    }
+  });
+};
+
 export const getInvitesByGroupId = async (groupId: number) => {
   return await prisma.invite.findMany({
     where: {
