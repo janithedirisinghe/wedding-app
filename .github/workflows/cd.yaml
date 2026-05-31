@@ -1,0 +1,80 @@
+name: CD
+
+on:
+  push:
+    branches: [develop, main]
+
+env:
+  AWS_REGION: us-east-1
+  ECR_REGISTRY: 140023361098.dkr.ecr.us-east-1.amazonaws.com
+  ECR_REPOSITORY: wedding-app
+  CLUSTER_NAME: nextjs-cluster
+
+jobs:
+  deploy-staging:
+    name: Deploy to staging
+    if: github.ref == 'refs/heads/develop'
+    runs-on: ubuntu-latest
+    environment: staging
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Connect kubectl to EKS
+        run: aws eks update-kubeconfig --name $CLUSTER_NAME --region $AWS_REGION
+
+      - name: Deploy to staging
+        run: |
+          kubectl set image deployment/wedding-app \
+            wedding-app=$ECR_REGISTRY/$ECR_REPOSITORY:${{ github.sha }} \
+            -n wedding-staging
+          kubectl rollout status deployment/wedding-app \
+            -n wedding-staging --timeout=3m
+
+      - name: Smoke test staging
+        run: |
+          HOST=$(kubectl get ingress wedding-ingress \
+            -n wedding-staging \
+            -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
+          curl -sf http://$HOST/api/health || exit 1
+          echo "Staging smoke test passed"
+
+  deploy-prod:
+    name: Deploy to production
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Connect kubectl to EKS
+        run: aws eks update-kubeconfig --name $CLUSTER_NAME --region $AWS_REGION
+
+      - name: Deploy to production
+        run: |
+          kubectl set image deployment/wedding-app \
+            wedding-app=$ECR_REGISTRY/$ECR_REPOSITORY:${{ github.sha }} \
+            -n wedding-prod
+          kubectl rollout status deployment/wedding-app \
+            -n wedding-prod --timeout=5m
+
+      - name: Smoke test production
+        run: |
+          HOST=$(kubectl get ingress wedding-ingress \
+            -n wedding-prod \
+            -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
+          curl -sf http://$HOST/api/health || exit 1
+          echo "Production smoke test passed"

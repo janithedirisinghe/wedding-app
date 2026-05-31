@@ -1,0 +1,10 @@
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: wedding-pdb
+  namespace: wedding-prod
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: wedding-app

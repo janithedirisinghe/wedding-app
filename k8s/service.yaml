@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: wedding-svc
+  namespace: wedding-prod
+spec:
+  selector:
+    app: wedding-app
+  ports:
+    - port: 80
+      targetPort: 3000
+      protocol: TCP
